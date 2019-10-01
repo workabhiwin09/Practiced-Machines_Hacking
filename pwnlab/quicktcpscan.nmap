@@ -1,0 +1,62 @@
+# Nmap 7.80 scan initiated Mon Sep 23 07:47:42 2019 as: nmap -sC -sV -vv -A -T4 -oA quicktcpscan 192.168.56.110
+Nmap scan report for 192.168.56.110
+Host is up, received arp-response (0.00098s latency).
+Scanned at 2019-09-23 07:47:43 EDT for 25s
+Not shown: 997 closed ports
+Reason: 997 resets
+PORT     STATE SERVICE REASON         VERSION
+80/tcp   open  http    syn-ack ttl 64 Apache httpd 2.4.10 ((Debian))
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.10 (Debian)
+|_http-title: PwnLab Intranet Image Hosting
+111/tcp  open  rpcbind syn-ack ttl 64 2-4 (RPC #100000)
+| rpcinfo: 
+|   program version    port/proto  service
+|   100000  2,3,4        111/tcp   rpcbind
+|   100000  2,3,4        111/udp   rpcbind
+|   100000  3,4          111/tcp6  rpcbind
+|   100000  3,4          111/udp6  rpcbind
+|   100024  1          34746/tcp6  status
+|   100024  1          36723/udp   status
+|   100024  1          40086/tcp   status
+|_  100024  1          50734/udp6  status
+3306/tcp open  mysql   syn-ack ttl 64 MySQL 5.5.47-0+deb8u1
+| mysql-info: 
+|   Protocol: 10
+|   Version: 5.5.47-0+deb8u1
+|   Thread ID: 38
+|   Capabilities flags: 63487
+|   Some Capabilities: FoundRows, SupportsTransactions, Speaks41ProtocolOld, Support41Auth, IgnoreSigpipes, DontAllowDatabaseTableColumn, ODBCClient, InteractiveClient, ConnectWithDatabase, IgnoreSpaceBeforeParenthesis, LongColumnFlag, SupportsLoadDataLocal, Speaks41ProtocolNew, LongPassword, SupportsCompression, SupportsMultipleStatments, SupportsMultipleResults, SupportsAuthPlugins
+|   Status: Autocommit
+|   Salt: pGRD@Sao*}]7=hw?p;qI
+|_  Auth Plugin Name: mysql_native_password
+MAC Address: 08:00:27:68:51:39 (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+TCP/IP fingerprint:
+OS:SCAN(V=7.80%E=4%D=9/23%OT=80%CT=1%CU=41563%PV=Y%DS=1%DC=D%G=Y%M=080027%T
+OS:M=5D88B0F8%P=x86_64-pc-linux-gnu)SEQ(SP=FF%GCD=2%ISR=10B%TI=Z%CI=I%II=I%
+OS:TS=8)OPS(O1=M5B4ST11NW6%O2=M5B4ST11NW6%O3=M5B4NNT11NW6%O4=M5B4ST11NW6%O5
+OS:=M5B4ST11NW6%O6=M5B4ST11)WIN(W1=7120%W2=7120%W3=7120%W4=7120%W5=7120%W6=
+OS:7120)ECN(R=Y%DF=Y%T=40%W=7210%O=M5B4NNSNW6%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%
+OS:A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0
+OS:%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S
+OS:=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R
+OS:=Y%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N
+OS:%T=40%CD=S)
+
+Uptime guess: 0.012 days (since Mon Sep 23 07:31:19 2019)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=255 (Good luck!)
+IP ID Sequence Generation: All zeros
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.98 ms 192.168.56.110
+
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Mon Sep 23 07:48:08 2019 -- 1 IP address (1 host up) scanned in 27.16 seconds
